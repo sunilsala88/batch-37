@@ -1,0 +1,1 @@
+print('we will study data structure')
