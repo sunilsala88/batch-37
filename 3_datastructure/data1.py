@@ -1,8 +1,20 @@
-print('we will study data structure')
+n1=90
+f1=4.4
+s1='66'
+b1=True
+print(type(n1))
+print(type(f1))
+print(type(s1)) 
+print(type(b1))
+#list
+#dictionay
+#tuple
+#set
 
-#git config --global user.name "sunilsala88"
-#git config --global user.email "sunilsala88@gmail.com"
+l1=[33,44,55,66,77]
+print(l1)
+print(type(l1))
 
-#sudo rm -rf /Library/Frameworks/Python.framework/Versions/3.14
-
-#https://github.com/sunilsala88/batch-37
+print(l1[0])
+print(l1[-1])
+print(l1[1:3])
