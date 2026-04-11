@@ -19,5 +19,15 @@ print(s1)
 s1.add(88)
 print(s1)
 
+
 s1.pop()
 print(s1)
+
+
+
+s2='ts.la-100'
+print(s2.split('.'))
+
+l1=['tsla-100','apple-200','google-300']
+z='='.join(l1)
+print(z)
