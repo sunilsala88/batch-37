@@ -22,3 +22,4 @@ print(stock_price)
 del stock_price['meta']
 stock_price.pop('google')
 print(stock_price)
+

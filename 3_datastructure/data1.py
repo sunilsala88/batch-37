@@ -39,3 +39,6 @@ print(l1)
 #update element in list
 l1[1]=100
 print(l1)
+
+#index
+print(l1.index(66))
