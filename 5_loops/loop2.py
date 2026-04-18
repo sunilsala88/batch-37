@@ -21,3 +21,13 @@ print(m)
 
 v=[200,300,400,500,600]
 p=[20,30,40,50,60]
+sum_volume=0
+sum_volume_price=0
+for i in range(len(v)):
+    p1=p[i]
+    v1=v[i]
+    sum_volume=sum_volume+v1
+    sum_volume_price=sum_volume_price+(v1*p1)
+
+vwap=sum_volume_price/sum_volume
+print(vwap)
