@@ -32,3 +32,12 @@ new_list=[]
 for i in range(len(prices)):
     new_list.append(prices[i]**2)
 print(new_list)
+
+
+
+stock_prices={'apple':33,'google':44,'microsoft':55,'facebook':66,'amazon':77}
+for i in stock_prices:
+    print(i,stock_prices[i])
+
+
+print(list(stock_prices.keys()))
