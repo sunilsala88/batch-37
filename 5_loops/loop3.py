@@ -37,3 +37,11 @@ print(list(range(5)))
 print(list(range(5,10)))
 print(list(range(1,10,2)))
 print(list(range(4,-1,-1)))
+
+l1=[65,97,89,23,45]
+l=[4,3,2,1,0]
+print(list(range(4,-1,-1)))
+new_list=[]
+for i in range(len(l1)-1,-1,-1):
+    new_list.append(l1[i])
+print(new_list)
