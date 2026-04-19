@@ -31,3 +31,5 @@ for i in range(len(v)):
 
 vwap=sum_volume_price/sum_volume
 print(vwap)
+
+
