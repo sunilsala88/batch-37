@@ -28,17 +28,27 @@
 #list of 10 fib numbers
 #[0,1,1,2,3,5,8,13,21,34]
 
-fib=[0,1]
-count=10
-while True:
-    if len(fib)==count:
-        break
-    prev=fib[-1]
-    prev_prev=fib[-2]
-    current=prev+prev_prev
-    fib.append(current)
-print(fib)
+# fib=[0,1]
+# count=10
+# while True:
+#     if len(fib)==count:
+#         break
+#     prev=fib[-1]
+#     prev_prev=fib[-2]
+#     current=prev+prev_prev
+#     fib.append(current)
+# print(fib)
 
 
-lisst1=[34,25,68,21,11,45,32]
+list1=[34,25,68,21,11]
 #find the largest number in the list
+largest=list1[0]
+
+for i in list1:
+    if i>largest:
+        largest=i
+print(largest)
+
+
+#get fib numbers using for loop
+#get lartgest number in the list using while loop
