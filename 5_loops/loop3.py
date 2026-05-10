@@ -33,15 +33,36 @@
 
 # s1='hello'#'olleh'
 
-print(list(range(5)))
-print(list(range(5,10)))
-print(list(range(1,10,2)))
-print(list(range(4,-1,-1)))
+# print(list(range(5)))
+# print(list(range(5,10)))
+# print(list(range(1,10,2)))
+# print(list(range(4,-1,-1)))
 
-l1=[65,97,89,23,45]
-l=[4,3,2,1,0]
-print(list(range(4,-1,-1)))
-new_list=[]
-for i in range(len(l1)-1,-1,-1):
-    new_list.append(l1[i])
-print(new_list)
+# l1=[65,97,89,23,45]
+# l=[4,3,2,1,0]
+# print(list(range(4,-1,-1)))
+# new_list=[]
+# for i in range(len(l1)-1,-1,-1):
+#     new_list.append(l1[i])
+# print(new_list)
+
+
+fib=[0,1]
+last=1
+second_last=0
+for i in range(8):
+    current=last+second_last
+    fib.append(current)
+    second_last=last
+    last=current
+    
+print(fib)
+
+#first 50 even numbers
+even_numbers=[]
+for i in range(100):
+    if i%2==0:
+        even_numbers.append(i)
+print(even_numbers)
+
+
