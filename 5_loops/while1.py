@@ -40,15 +40,41 @@
 # print(fib)
 
 
-list1=[34,25,68,21,11]
-#find the largest number in the list
-largest=list1[0]
+# list1=[34,25,68,21,11]
+# #find the largest number in the list
+# largest=list1[0]
 
-for i in list1:
-    if i>largest:
-        largest=i
-print(largest)
+# for i in list1:
+#     if i>largest:
+#         largest=i
+# print(largest)
 
 
 #get fib numbers using for loop
 #get lartgest number in the list using while loop
+
+
+fib=[0,1]
+count=10
+
+for i in range(count-2):
+    prev=fib[-1]
+    prev_prev=fib[-2]
+    current=prev+prev_prev
+    fib.append(current)
+
+print(fib)
+print(list(range(8)))
+
+
+list1=[34,25,68,21,11]
+h=list1[0]
+i=0
+while True:
+    if i==len(list1):
+        break
+    if list1[i]>h:
+        h=list1[i]
+
+    i=i+1
+print(h)
