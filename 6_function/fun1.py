@@ -76,21 +76,27 @@ print(reversed_list)
 
 
 #take stock prices as input and return portfolio value as output
-stock_prices={'amzn':500,'msft':200,'goog':1000,'tsla':300,'nifty':600}
-portfolio={}
-while True:
-    name=input('enter stock name(type q to quit):')
+def get_portfolio(stock_prices:dict)->dict:
     
-    if name=='q':
-        break
-    if name=='msft':
-        print('msft is not available try some other stock')
-        continue
-    price=stock_prices.get(name)
-    print(name,price)
-    # if price is not None:
-    if price :
-        portfolio.update({name:price})
-    else:
-        print('stock not found')
-print('portfolio:',portfolio)
+    portfolio={}
+    while True:
+        name=input('enter stock name(type q to quit):')
+        
+        if name=='q':
+            break
+        if name=='msft':
+            print('msft is not available try some other stock')
+            continue
+        price=stock_prices.get(name)
+        print(name,price)
+        # if price is not None:
+        if price :
+            portfolio.update({name:price})
+        else:
+            print('stock not found')
+    return portfolio
+
+
+stock_prices={'amzn':500,'msft':200,'goog':1000,'tsla':300,'nifty':600}
+portfolio=get_portfolio(stock_prices)
+print(portfolio)
