@@ -50,3 +50,47 @@ print(fib_numbers)
 
 #function to get the largest number in the list
 #create a rev function which takes a list as input and returns the reversed list as output
+
+def get_largest(list1:list)->int:
+    max=list1[0]
+    for i in list1:
+        if i>max:
+            max=i
+    return max
+
+largest_number=get_largest([34,25,68,21,11])
+print(largest_number)
+
+def rev_list(list1:list)->list:
+    rev_list=[]
+    i=len(list1)-1
+    while True:
+        if i<0:
+            break
+        rev_list.append(list1[i])
+        i=i-1
+    return rev_list
+
+reversed_list=rev_list([34,25,68,21,11])
+print(reversed_list)
+
+
+#take stock prices as input and return portfolio value as output
+stock_prices={'amzn':500,'msft':200,'goog':1000,'tsla':300,'nifty':600}
+portfolio={}
+while True:
+    name=input('enter stock name(type q to quit):')
+    
+    if name=='q':
+        break
+    if name=='msft':
+        print('msft is not available try some other stock')
+        continue
+    price=stock_prices.get(name)
+    print(name,price)
+    # if price is not None:
+    if price :
+        portfolio.update({name:price})
+    else:
+        print('stock not found')
+print('portfolio:',portfolio)
