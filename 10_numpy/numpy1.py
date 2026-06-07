@@ -17,3 +17,12 @@ print(np.ones(5,dtype=int))
 print(np.zeros(5))
 
 #multidimensional array
+ml1=[[1,2,3],[4,5,6],[7,8,9]]
+print(ml1)
+mp1=np.array(ml1)
+print(mp1)
+
+mp5=np.arange(25).reshape(5,5)
+print(mp5)
+
+print(mp5[1,4])
