@@ -13,3 +13,7 @@ f='%b %d, %Y'
 dt2=dt.datetime.strptime(date2,f)
 print(dt2)
 
+data3='12/29/2026'
+f1='%m/%d/%Y'
+dt3=dt.datetime.strptime(data3,f1)
+print(dt3)
