@@ -49,5 +49,18 @@ data["ema"] = ema(data["Close"], length=10)
 
 import pandas_ta as ta
 data["ema_ta"] = ta.ema(data["Close"], length=10)
+import talib as ta1
+
+data["ema_talib"] = ta1.EMA(data["Close"], timeperiod=10)
 print(data)
 
+#plotly
+#matplotlib
+#mplfinance
+import mplfinance as mpf
+a=mpf.make_addplot(data["sma1"],color='blue')
+b=mpf.make_addplot(data["ema"],color='red')
+mpf.plot(data,type='candle',style='yahoo', addplot=[a,b])
+
+
+#bollinger band
