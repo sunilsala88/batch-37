@@ -120,5 +120,11 @@ import pandas_ta as ta
 rsi2=ta.atr(data['High'],data['Low'],data['Close'],length=14)
 print(rsi2)
 
-ta.supertrend()
+super1=ta.supertrend(data['High'],data['Low'],data['Close'],length=14, multiplier=3.0)
+print(super1)
 
+
+l=mpf.make_addplot(super1["SUPERTl_14_3.0"],color='blue')
+s=mpf.make_addplot(super1["SUPERTs_14_3.0"],color='black')
+
+mpf.plot(data,type='candle',style='yahoo', addplot=[l,s])
