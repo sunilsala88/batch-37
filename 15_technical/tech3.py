@@ -109,22 +109,122 @@ def atr(
 	atr_out.category = "volatility"
 	return atr_out
 
+
+def hl2(high, low):
+	high = pd.Series(high) if high is not None else None
+	low = pd.Series(low) if low is not None else None
+	if high is None or low is None:
+		return None
+	return (high + low) / 2.0
+
+
+def supertrend(
+	high,
+	low,
+	close,
+	length=None,
+	atr_length=None,
+	multiplier=None,
+	atr_mamode=None,
+	offset=None,
+	**kwargs,
+):
+	"""Supertrend (pandas-only implementation, pandas_ta compatible signature)."""
+	length = int(length) if length and int(length) > 0 else 7
+	atr_length = int(atr_length) if atr_length and int(atr_length) > 0 else length
+	high = pd.Series(high) if high is not None else None
+	low = pd.Series(low) if low is not None else None
+	close = pd.Series(close) if close is not None else None
+
+	if high is None or low is None or close is None or len(close) < (length + 1):
+		return None
+
+	multiplier = float(multiplier) if multiplier and float(multiplier) > 0 else 3.0
+	atr_mamode = (atr_mamode or "rma").lower()
+	offset = int(offset) if offset else 0
+
+	m = close.size
+	dir_ = [1] * m
+	trend = [0] * m
+	long = [np.nan] * m
+	short = [np.nan] * m
+
+	hl2_ = hl2(high, low)
+	matr = multiplier * atr(high, low, close, atr_length, mamode=atr_mamode)
+	lb = hl2_ - matr
+	ub = hl2_ + matr
+
+	for i in range(1, m):
+		if close.iat[i] > ub.iat[i - 1]:
+			dir_[i] = 1
+		elif close.iat[i] < lb.iat[i - 1]:
+			dir_[i] = -1
+		else:
+			dir_[i] = dir_[i - 1]
+			if dir_[i] > 0 and lb.iat[i] < lb.iat[i - 1]:
+				lb.iat[i] = lb.iat[i - 1]
+			if dir_[i] < 0 and ub.iat[i] > ub.iat[i - 1]:
+				ub.iat[i] = ub.iat[i - 1]
+
+		if dir_[i] > 0:
+			trend[i] = long[i] = lb.iat[i]
+		else:
+			trend[i] = short[i] = ub.iat[i]
+
+	trend[0] = np.nan
+	dir_[:length] = [np.nan] * length
+
+	_props = f"_{length}_{multiplier}"
+	data = {
+		f"SUPERT{_props}": trend,
+		f"SUPERTd{_props}": dir_,
+		f"SUPERTl{_props}": long,
+		f"SUPERTs{_props}": short,
+	}
+	df = pd.DataFrame(data, index=close.index)
+
+	df.name = f"SUPERT{_props}"
+	df.category = "overlap"
+
+	if offset != 0:
+		df = df.shift(offset)
+
+	if "fillna" in kwargs:
+		df.fillna(kwargs["fillna"], inplace=True)
+
+	return df
+
 data=yf.download("TSLA",period="3y",interval="1d",multi_level_index=False)
 print(data)
 
 rsi1=atr(data['High'],data['Low'],data['Close'],length=14)
 print(rsi1)
 
+super1=supertrend(data['High'],data['Low'],data['Close'],length=14, multiplier=3.0)
+print(super1)
 
 import pandas_ta as ta
-rsi2=ta.atr(data['High'],data['Low'],data['Close'],length=14)
-print(rsi2)
-
 super1=ta.supertrend(data['High'],data['Low'],data['Close'],length=14, multiplier=3.0)
 print(super1)
 
 
-l=mpf.make_addplot(super1["SUPERTl_14_3.0"],color='blue')
-s=mpf.make_addplot(super1["SUPERTs_14_3.0"],color='black')
 
-mpf.plot(data,type='candle',style='yahoo', addplot=[l,s])
+
+
+# l=mpf.make_addplot(super1["SUPERTl_14_3.0"],color='blue')
+# s=mpf.make_addplot(super1["SUPERTs_14_3.0"],color='black')
+
+# mpf.plot(data,type='candle',style='yahoo', addplot=[l,s])
+
+
+adx1=ta.adx(data['High'],data['Low'],data['Close'],length=14)
+print(adx1)
+
+
+l=mpf.make_addplot(adx1["ADX_14"],color='blue',panel=1)
+
+
+# mpf.plot(data,type='candle',style='yahoo', addplot=[l])
+
+donchain1=ta.donchian(data['High'],data['Low'],data['Close'],lower_length=30)
+print(donchain1)
