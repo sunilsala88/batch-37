@@ -1,35 +1,36 @@
 
-#backtesting.py
 
+import yfinance as yf
+data=yf.download('BTC-USD',period='10y',multi_level_index=False)
+print(data)
+
+import pandas_ta as ta
+
+def sma(closing_price,period):
+    return ta.sma(closing_price,length=period)
+
+def ema(closing_price,period):
+    return ta.ema(closing_price,length=period)
 
 from backtesting import Backtest, Strategy
-from backtesting.lib import crossover
-
-from backtesting.test import SMA, GOOG
 
 
-class SmaCross(Strategy):
-    n1 = 10
-    n2 = 20
+class SMAcrossover(Strategy):
+    s1=50
+    e1=20
 
     def init(self):
-        close = self.data.Close
-        self.sma1 = self.I(SMA, close, self.n1)
-        self.sma2 = self.I(SMA, close, self.n2)
+        pass
 
     def next(self):
-        if crossover(self.sma1, self.sma2):
-            self.position.close()
-            self.buy()
-        elif crossover(self.sma2, self.sma1):
-            self.position.close()
-            self.sell()
+        pass
 
 
-bt = Backtest(GOOG, SmaCross,
-              cash=10000, commission=.002,
-              exclusive_orders=True)
+sma=sma(data['Close'],50)
+ema=ema(data['Close'],20)
+print(sma)
+print(ema)
 
-output = bt.run()
-print(output)
-bt.plot()
+# bt=Backtest(data, SMAcrossover,cash=10_00_000)
+# result=bt.run()
+# bt.plot()
