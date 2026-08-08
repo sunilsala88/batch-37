@@ -1,7 +1,7 @@
 
 
 import yfinance as yf
-data=yf.download('BTC-USD',period='10y',multi_level_index=False)
+data=yf.download('GOOG',period='10y',multi_level_index=False)
 print(data)
 import time
 import pandas_ta as ta
@@ -33,11 +33,15 @@ class SMAcrossover(Strategy):
         previous_ema=self.ema[-2]
 
         if current_ema>current_sma and previous_ema<previous_sma:
+            if self.position:
+                self.position.close()
             self.buy()
 
         elif current_ema<current_sma and previous_ema>previous_sma:
             if self.position:
                 self.position.close()
+
+            self.sell()
 
 
 
