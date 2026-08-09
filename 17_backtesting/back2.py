@@ -22,12 +22,15 @@ class RSIStrategy(Strategy):
     def next(self):
         current_rsi = self.rsi[-1]
 
-        if current_rsi > self.upper:
+        # Only flip position on an actual direction change (matches
+        # vectorbt's accumulate=False behavior): repeat same-side signals
+        # while already positioned that way are ignored, not re-entered.
+        if current_rsi > self.upper and not self.position.is_long:
             if self.position:
                 self.position.close()
             self.buy()
 
-        elif current_rsi < self.lower:
+        elif current_rsi < self.lower and not self.position.is_short:
             if self.position:
                 self.position.close()
             self.sell()
@@ -36,7 +39,11 @@ class RSIStrategy(Strategy):
 rsi = calculate_rsi(data['Close'], 14)
 print(rsi)
 
-bt = Backtest(data, RSIStrategy, cash=10_00_000,commission=0.002)
+bt = Backtest(data, RSIStrategy, cash=10_00_000)
 result = bt.run()
 print(result)
+
+trades = result['_trades']
+trades.to_csv('trades2.csv', index=False)
+
 # bt.plot()
