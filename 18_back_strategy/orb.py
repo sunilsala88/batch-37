@@ -1,14 +1,28 @@
-import yfinance as yf
 import pandas as pd
 from backtesting import Backtest, Strategy
 
+CSV_PATH = "/Users/algo trading 2026/batch 37/tsla_1min_1year.csv"
 
-def get_tsla_1min_candles(period="7d", interval="1m"):
-    df = yf.download("TSLA", period=period, interval=interval)
 
-    # Flatten MultiIndex columns (yfinance returns (field, ticker) tuples)
-    if df.columns.nlevels > 1:
-        df.columns = [col[0] for col in df.columns]
+def get_tsla_1min_candles(csv_path=CSV_PATH):
+    df = pd.read_csv(csv_path)
+
+    # Timestamps carry mixed UTC offsets across the year (DST -04:00/-05:00),
+    # so parse as UTC first, then convert to exchange local time for a clean
+    # tz-aware datetime index.
+    df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_convert("America/New_York")
+    df = df.set_index("date").sort_index()
+
+    # backtesting.py requires columns: Open, High, Low, Close, (Volume)
+    df = df.rename(
+        columns={
+            "open": "Open",
+            "high": "High",
+            "low": "Low",
+            "close": "Close",
+            "volume": "Volume",
+        }
+    )
 
     return df
 
@@ -21,7 +35,7 @@ df = df[["Open", "High", "Low", "Close", "Volume"]].dropna()
 
 class OpeningRangeBreakout(Strategy):
     # Length of the opening range in minutes
-    or_minutes =60
+    or_minutes =10
 
     # Stop taking new trades / flatten this many minutes before the session's
     # last bar. Orders fill at the *next* bar's open, so flattening a few
@@ -86,17 +100,34 @@ class OpeningRangeBreakout(Strategy):
 
         # Breakout above the opening range high -> go long
         if not self.position and price > self._or_high:
-            self.buy(sl=self._or_low)
+            self.buy()
 
         # Breakout below the opening range low -> go short
         elif not self.position and price < self._or_low:
-            self.sell(sl=self._or_high)
+            self.sell()
 
 
 bt = Backtest(df, OpeningRangeBreakout, cash=100_000, commission=0.0002, finalize_trades=True)
 stats = bt.run()
-
 print(stats)
 print(stats._trades)
+
+# --- Optimize the opening-range length -------------------------------------
+# Try a range of opening-range lengths (in minutes) and see which gives the
+# best return. `return_heatmap=True` also gives us the result for every
+# individual value, not just the winner.
+# stats, heatmap = bt.optimize(
+#     or_minutes=range(5, 121, 5),
+#     maximize="Return [%]",
+#     method="grid",
+#     return_heatmap=True,
+# )
+
+# print(heatmap.sort_values(ascending=False))
+# print()
+# print(f"Best or_minutes: {stats._strategy.or_minutes}")
+# print()
+# print(stats)
+# print(stats._trades)
 
 bt.plot()
