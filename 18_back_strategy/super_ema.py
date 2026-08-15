@@ -4,6 +4,8 @@ import yfinance as yf
 data=yf.download('BTC-USD', period='2y', interval='1h',multi_level_index=False)
 print(data)
 
+import math
+
 from backtesting import Backtest, Strategy
 from backtesting.lib import resample_apply
 import pandas_ta as ta
@@ -29,6 +31,8 @@ class super_ema(Strategy):
     s1=15
     d1=14
     th1=30
+    sl_pct=0.01
+    trail_pct=0.005
 
 
     def init(self):
@@ -67,13 +71,30 @@ class super_ema(Strategy):
 
         if trend==1 and closing_price>self.daily_ema[-1] and not self.trade_taken_in_trend:
             if not self.position:
-                self.buy()
+                self.buy(sl=closing_price*(1-self.sl_pct))
                 self.trade_taken_in_trend=True
 
         elif trend==-1 and closing_price<self.daily_ema[-1] and not self.trade_taken_in_trend:
             if not self.position:
-                self.sell()
+                self.sell(sl=closing_price*(1+self.sl_pct))
                 self.trade_taken_in_trend=True
+
+        # Trailing stop: every time price advances another `trail_pct`
+        # in the trade's favor, ratchet the stop-loss up by `trail_pct`
+        # too (stop only ever tightens, never loosens).
+        for trade in self.trades:
+            if trade.is_long:
+                steps=math.floor((closing_price/trade.entry_price-1)/self.trail_pct)
+                if steps>=1:
+                    new_sl=trade.entry_price*(1+(steps-1)*self.trail_pct)
+                    if trade.sl is None or new_sl>trade.sl:
+                        trade.sl=new_sl
+            else:
+                steps=math.floor((1-closing_price/trade.entry_price)/self.trail_pct)
+                if steps>=1:
+                    new_sl=trade.entry_price*(1-(steps-1)*self.trail_pct)
+                    if trade.sl is None or new_sl<trade.sl:
+                        trade.sl=new_sl
 
 
 
